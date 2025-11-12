@@ -191,16 +191,17 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 - [x] getUserProfile Lambda (Node.js)
 - [x] DynamoDB read permissions configured
 - [x] Lambda tested in console
-- [ ] API Gateway GET /users/{id}/profile endpoint
-- [ ] Test endpoint with Postman
-- [ ] React component to fetch profile
+- [x] API Gateway GET /users/{id}/profile endpoint
+- [x] Test endpoint with Postman
+- [x] React component to fetch profile
 
-#### Day 3: User Registration (Coming Soon)
-- [ ] registerUser Lambda (Node.js)
-- [ ] bcrypt password hashing
-- [ ] Email validation
-- [ ] POST /auth/register endpoint
-- [ ] React registration form
+#### Day 3: User Registration
+- [x] registerUser Lambda (Node.js)
+- [x] bcrypt password hashing
+- [x] Email validation
+- [x] Password validation
+- [x] POST /auth/register endpoint
+- [x] React registration form
 
 #### Day 4: User Login + JWT (Coming Soon)
 - [ ] loginUser Lambda (Node.js)
