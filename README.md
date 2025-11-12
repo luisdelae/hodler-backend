@@ -5,7 +5,7 @@ Backend infrastructure for Hodler - a cryptocurrency trading simulator mobile ap
 ## Architecture
 
 Serverless backend built on AWS using:
-- **Lambda Functions**: Node.js + Python for API endpoints
+- **Lambda Functions**: Node.js for API endpoints
 - **API Gateway**: REST API routing
 - **DynamoDB**: NoSQL database for users and leaderboards
 - **Infrastructure**: Manual deployment (Terraform coming in Week 7-8)
@@ -172,6 +172,50 @@ This backend is part of an 8-week learning project to build full-stack web devel
 - **Week 8**: Production deployment + polish
 
 Coming from Android development (Kotlin, Jetpack Compose), this project translates mobile patterns to web/cloud architecture.
+
+## Development Checklist
+
+### Week 2: AWS Fundamentals + Authentication
+
+#### Day 1: Setup & First Lambda ✅
+- [x] AWS account secured (MFA, IAM user)
+- [x] Billing alerts configured
+- [x] AWS CLI configured
+- [x] First Lambda function (helloWorld)
+- [x] API Gateway connected
+- [x] React integration working
+
+#### Day 2: DynamoDB & Read Operations
+- [x] DynamoDB Users table created
+- [x] Test data added manually
+- [x] getUserProfile Lambda (Node.js)
+- [x] DynamoDB read permissions configured
+- [x] Lambda tested in console
+- [ ] API Gateway GET /users/{id}/profile endpoint
+- [ ] Test endpoint with Postman
+- [ ] React component to fetch profile
+
+#### Day 3: User Registration (Coming Soon)
+- [ ] registerUser Lambda (Node.js)
+- [ ] bcrypt password hashing
+- [ ] Email validation
+- [ ] POST /auth/register endpoint
+- [ ] React registration form
+
+#### Day 4: User Login + JWT (Coming Soon)
+- [ ] loginUser Lambda (Node.js)
+- [ ] JWT token generation
+- [ ] Password verification
+- [ ] POST /auth/login endpoint
+- [ ] React login form
+- [ ] Auth state management (Context)
+
+#### Day 5: Update Profile + Polish (Coming Soon)
+- [ ] updateUserProfile Lambda (Node.js)
+- [ ] PUT /users/{id}/profile endpoint
+- [ ] React profile editor
+- [ ] Postman collection export
+- [ ] README API documentation
 
 ## Related Repositories
 
