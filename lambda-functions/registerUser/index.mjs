@@ -1,11 +1,17 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import {
+    DynamoDBDocumentClient,
+    PutCommand,
+    ScanCommand,
+} from '@aws-sdk/lib-dynamodb';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
 
 const client = new DynamoDBClient({});
 const dynamodb = DynamoDBDocumentClient.from(client);
 const TABLE_NAME = 'Users';
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
 
 /**
  * Validates password strength
@@ -34,7 +40,9 @@ function validatePassword(password) {
     }
 
     if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        return { error: 'Password must contain at least one special character (!@#$%^&*...)' };
+        return {
+            error: 'Password must contain at least one special character (!@#$%^&*...)',
+        };
     }
 
     return null;
@@ -47,14 +55,14 @@ export const handler = async (event) => {
 
     try {
         body = JSON.parse(event.body);
-    } catch(err) {
+    } catch (err) {
         return {
             statusCode: 400,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify({ error: 'Invalid JSON in request body' })
+            body: JSON.stringify({ error: 'Invalid JSON in request body' }),
         };
     }
 
@@ -65,9 +73,9 @@ export const handler = async (event) => {
             statusCode: 400,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify({ error: 'Email is required' })
+            body: JSON.stringify({ error: 'Email is required' }),
         };
     }
 
@@ -77,9 +85,9 @@ export const handler = async (event) => {
             statusCode: 400,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify({ error: 'Invalid email format' })
+            body: JSON.stringify({ error: 'Invalid email format' }),
         };
     }
 
@@ -89,9 +97,9 @@ export const handler = async (event) => {
             statusCode: 400,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify(passwordError)
+            body: JSON.stringify(passwordError),
         };
     }
 
@@ -104,8 +112,8 @@ export const handler = async (event) => {
             TableName: TABLE_NAME,
             FilterExpression: 'email = :email',
             ExpressionAttributeValues: {
-                ':email': email
-            }
+                ':email': email,
+            },
         });
 
         const existingUsers = await dynamodb.send(scanCommand);
@@ -115,45 +123,55 @@ export const handler = async (event) => {
                 statusCode: 409,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Access-Control-Allow-Origin': '*',
                 },
-                body: JSON.stringify({ error: 'Email already registered' })
+                body: JSON.stringify({ error: 'Email already registered' }),
             };
         }
-        
+
         const passwordHash = await bcrypt.hash(password, 10);
 
         const userId = `user-${uuidv4()}`;
 
-         const newUser = {
+        const newUser = {
             userId,
             email,
             passwordHash,
             username: username || email.split('@')[0],
             createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-         };
+            updatedAt: new Date().toISOString(),
+        };
 
-         const putCommand = new PutCommand({
+        const putCommand = new PutCommand({
             TableName: TABLE_NAME,
             Item: newUser,
-            ConditionExpression: 'attribute_not_exists(userId)'
-         });
+            ConditionExpression: 'attribute_not_exists(userId)',
+        });
 
-         await dynamodb.send(putCommand);
+        await dynamodb.send(putCommand);
 
-         return {
+        const token = jwt.sign(
+            {
+                userId: userId,
+                email: email,
+            },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+        );
+
+        return {
             statusCode: 201,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
             body: JSON.stringify({
                 message: 'User registered successfully',
+                token,
                 userId,
                 email,
-                username: newUser.username
-            })
+                username: newUser.username,
+            }),
         };
     } catch (err) {
         console.error('Error:', err);
@@ -162,12 +180,12 @@ export const handler = async (event) => {
             statusCode: 500,
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
+                'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 error: 'Internal server error',
-                details: err.message 
-            })
+                details: err.message,
+            }),
         };
     }
 };

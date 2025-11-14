@@ -5,35 +5,41 @@ Backend infrastructure for Hodler - a cryptocurrency trading simulator mobile ap
 ## Architecture
 
 Serverless backend built on AWS using:
-- **Lambda Functions**: Node.js for API endpoints
-- **API Gateway**: REST API routing
-- **DynamoDB**: NoSQL database for users and leaderboards
-- **Infrastructure**: Manual deployment (Terraform coming in Week 7-8)
+
+-   **Lambda Functions**: Node.js for API endpoints
+-   **API Gateway**: REST API routing
+-   **DynamoDB**: NoSQL database for users and leaderboards
+-   **Infrastructure**: Manual deployment (Terraform coming in Week 7-8)
 
 ## API Endpoints
 
 ### Authentication
-- `POST /auth/register` - Create new user account
-- `POST /auth/login` - User login with JWT token
+
+-   `POST /auth/register` - Create new user account
+-   `POST /auth/login` - User login with JWT token
 
 ### User Management
-- `GET /users/{id}/profile` - Fetch user profile
-- `PUT /users/{id}/profile` - Update user profile
+
+-   `GET /users/{id}/profile` - Fetch user profile
+-   `PUT /users/{id}/profile` - Update user profile
 
 ### Leaderboards (Coming Week 4-5)
-- `POST /leaderboards/submit` - Submit portfolio score
-- `GET /leaderboards/global` - Get global rankings
-- `GET /leaderboards/{userId}/rank` - Get user's rank
+
+-   `POST /leaderboards/submit` - Submit portfolio score
+-   `GET /leaderboards/global` - Get global rankings
+-   `GET /leaderboards/{userId}/rank` - Get user's rank
 
 ## Development Setup
 
 ### Prerequisites
-- Node.js 20+
-- Python 3.12+
-- AWS CLI configured
-- AWS account with IAM user (not root)
+
+-   Node.js 20+
+-   Python 3.12+
+-   AWS CLI configured
+-   AWS account with IAM user (not root)
 
 ### AWS CLI Configuration
+
 ```bash
 aws configure
 # Enter your IAM user access keys
@@ -42,6 +48,7 @@ aws configure
 ```
 
 ### Install Dependencies (per Lambda)
+
 ```bash
 cd lambda-functions/registerUser
 npm install
@@ -50,29 +57,35 @@ npm install
 ## Security
 
 ### AWS Account Protection
-- ✅ MFA enabled on root + IAM user
-- ✅ Billing alerts at different dollar levels
-- ✅ IAM user with AdministratorAccess (for learning)
-- ✅ Service throttling configured
-- ✅ Emergency teardown scripts
+
+-   ✅ MFA enabled on root + IAM user
+-   ✅ Billing alerts at different dollar levels
+-   ✅ IAM user with AdministratorAccess (for learning)
+-   ✅ Service throttling configured
+-   ✅ Emergency teardown scripts
 
 ### Credentials
+
 **NEVER commit to Git:**
-- AWS access keys
-- JWT secrets
-- `.env` files
-- `.zip` deployment packages
+
+-   AWS access keys
+-   JWT secrets
+-   `.env` files
+-   `.zip` deployment packages
 
 ### Emergency Teardown
+
 If AWS costs spike unexpectedly:
 
 **Bash:**
+
 ```bash
 ./scripts/teardown.sh
 # Type "DELETE" to confirm
 ```
 
 **PowerShell:**
+
 ```powershell
 .\scripts\teardown.ps1
 # Type "DELETE" to confirm
@@ -83,6 +96,7 @@ Deletes all Lambda functions, API Gateways, and DynamoDB tables.
 ## DynamoDB Schema
 
 ### Users Table
+
 ```
 Users
 ├── userId (String, PK)       - Unique user ID
@@ -94,6 +108,7 @@ Users
 ```
 
 ### Leaderboards Table (Coming Week 4-5)
+
 ```
 Leaderboards
 ├── userId (String, PK)
@@ -106,9 +121,11 @@ Leaderboards
 ## Testing
 
 ### Postman
+
 Import collection from `/docs/hodler-api-postman.json` (available later)
 
 ### Manual Testing
+
 ```bash
 # Test Lambda locally (requires AWS SAM - optional)
 sam local invoke registerUser -e test-event.json
@@ -122,12 +139,14 @@ curl -X POST https://YOUR_API_URL/prod/auth/register \
 ## Cost Monitoring
 
 **Expected monthly costs (within aws free tier):**
-- Lambda: $0 (1M requests free)
-- API Gateway: $0 (1M calls free)
-- DynamoDB: $0 (25GB + 200M requests free)
-- **Total: $0/month** (for learning/development)
+
+-   Lambda: $0 (1M requests free)
+-   API Gateway: $0 (1M calls free)
+-   DynamoDB: $0 (25GB + 200M requests free)
+-   **Total: $0/month** (for learning/development)
 
 **Monitor costs:**
+
 ```bash
 # Check current month-to-date spend
 aws ce get-cost-and-usage \
@@ -141,22 +160,26 @@ Or visit: AWS Console → Billing Dashboard
 ## Deployment Notes
 
 ### Lambda Deployment
+
 1. Package function with dependencies:
-   ```bash
-   cd lambda-functions/functionName
-   npm install
-   zip -r functionName.zip .
-   ```
+
+    ```bash
+    cd lambda-functions/functionName
+    npm install
+    zip -r functionName.zip .
+    ```
 
 2. Upload via AWS Console:
-   - Lambda → Function → Code → Upload from .zip
+
+    - Lambda → Function → Code → Upload from .zip
 
 3. Configure:
-   - Timeout: 30 seconds
-   - Memory: 256 MB
-   - Environment variables (if needed)
+    - Timeout: 30 seconds
+    - Memory: 256 MB
+    - Environment variables (if needed)
 
 ### API Gateway Deployment
+
 1. Create resources and methods in Console
 2. Deploy to stage: `prod`
 3. Note Invoke URL for frontend
@@ -164,12 +187,13 @@ Or visit: AWS Console → Billing Dashboard
 ## Learning Context
 
 This backend is part of an 8-week learning project to build full-stack web development skills:
-- **Week 1**: React landing page
-- **Week 2**: AWS Lambda + DynamoDB (current)
-- **Week 3**: Redux state management
-- **Week 4-5**: Leaderboard backend
-- **Week 6-7**: Terraform + CI/CD
-- **Week 8**: Production deployment + polish
+
+-   **Week 1**: React landing page
+-   **Week 2**: AWS Lambda + DynamoDB (current)
+-   **Week 3**: Redux state management
+-   **Week 4-5**: Leaderboard backend
+-   **Week 6-7**: Terraform + CI/CD
+-   **Week 8**: Production deployment + polish
 
 Coming from Android development (Kotlin, Jetpack Compose), this project translates mobile patterns to web/cloud architecture.
 
@@ -178,53 +202,59 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 ### Week 2: AWS Fundamentals + Authentication
 
 #### Day 1: Setup & First Lambda ✅
-- [x] AWS account secured (MFA, IAM user)
-- [x] Billing alerts configured
-- [x] AWS CLI configured
-- [x] First Lambda function (helloWorld)
-- [x] API Gateway connected
-- [x] React integration working
+
+-   [x] AWS account secured (MFA, IAM user)
+-   [x] Billing alerts configured
+-   [x] AWS CLI configured
+-   [x] First Lambda function (helloWorld)
+-   [x] API Gateway connected
+-   [x] React integration working
 
 #### Day 2: DynamoDB & Read Operations
-- [x] DynamoDB Users table created
-- [x] Test data added manually
-- [x] getUserProfile Lambda (Node.js)
-- [x] DynamoDB read permissions configured
-- [x] Lambda tested in console
-- [x] API Gateway GET /users/{id}/profile endpoint
-- [x] Test endpoint with Postman
-- [x] React component to fetch profile
+
+-   [x] DynamoDB Users table created
+-   [x] Test data added manually
+-   [x] getUserProfile Lambda (Node.js)
+-   [x] DynamoDB read permissions configured
+-   [x] Lambda tested in console
+-   [x] API Gateway GET /users/{id}/profile endpoint
+-   [x] Test endpoint with Postman
+-   [x] React component to fetch profile
 
 #### Day 3: User Registration
-- [x] registerUser Lambda (Node.js)
-- [x] bcrypt password hashing
-- [x] Email validation
-- [x] Password validation
-- [x] POST /auth/register endpoint
-- [x] React registration form
+
+-   [x] registerUser Lambda (Node.js)
+-   [x] bcrypt password hashing
+-   [x] Email validation
+-   [x] Password validation
+-   [x] POST /auth/register endpoint
+-   [x] React registration form
 
 #### Day 4: User Login + JWT (Coming Soon)
-- [ ] loginUser Lambda (Node.js)
-- [ ] JWT token generation
-- [ ] Password verification
-- [ ] POST /auth/login endpoint
-- [ ] React login form
-- [ ] Auth state management (Context)
+
+-   [x] loginUser Lambda (Node.js)
+-   [x] JWT token generation
+-   [x] Password verification
+-   [x] POST /auth/login endpoint
+-   [x] React login form
+-   [x] Auth state management (Context)
 
 #### Day 5: Update Profile + Polish (Coming Soon)
-- [ ] updateUserProfile Lambda (Node.js)
-- [ ] PUT /users/{id}/profile endpoint
-- [ ] React profile editor
-- [ ] Postman collection export
-- [ ] README API documentation
+
+-   [ ] updateUserProfile Lambda (Node.js)
+-   [ ] PUT /users/{id}/profile endpoint
+-   [ ] React profile editor
+-   [ ] Postman collection export
+-   [ ] README API documentation
 
 ## Related Repositories
 
-- [hodler-landing](https://github.com/luisdelae/hodler-landing) - React frontend (marketing site)
-- [hodler-android](https://github.com/luisdelae/hodler-android) - V1 Complete | V2 In Progress
+-   [hodler-landing](https://github.com/luisdelae/hodler-landing) - React frontend (marketing site)
+-   [hodler-android](https://github.com/luisdelae/hodler-android) - V1 Complete | V2 In Progress
 
 ## Author
-**Luis De La Espriella**  
+
+**Luis De La Espriella**
 
 [GitHub](https://github.com/luisdelae) • [LinkedIn](https://linkedin.com/in/luisdelaespriella)
 

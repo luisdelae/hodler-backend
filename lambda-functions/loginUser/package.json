@@ -1,18 +1,17 @@
 {
-  "name": "registeruser",
+  "name": "loginuser",
   "version": "1.0.0",
   "description": "",
-  "main": "index.mjs",
-  "type": "module",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
-    "jsonwebtoken": "^9.0.2",
-    "uuid": "^13.0.0"
+    "jsonwebtoken": "^9.0.2"
   }
 }
