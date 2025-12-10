@@ -1,8 +1,33 @@
+# Node
 node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+package/
+*.egg-info/
+dist/
+build/
+
+# Environment
 .env
 .env.local
+.venv/
+venv/
+
+# Lambda packages
 *.zip
+
+# AWS
 .aws-sam/
+
+# Secrets
 *.pem
 *.key
+
+# OS
 .DS_Store
+.pylintrc

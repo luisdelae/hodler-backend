@@ -210,7 +210,7 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] API Gateway connected
 -   [x] React integration working
 
-#### Day 2: DynamoDB & Read Operations
+#### Day 2: DynamoDB & Read Operations ✅
 
 -   [x] DynamoDB Users table created
 -   [x] Test data added manually
@@ -221,7 +221,7 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] Test endpoint with Postman
 -   [x] React component to fetch profile
 
-#### Day 3: User Registration
+#### Day 3: User Registration ✅
 
 -   [x] registerUser Lambda (Node.js)
 -   [x] bcrypt password hashing
@@ -230,7 +230,7 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] POST /auth/register endpoint
 -   [x] React registration form
 
-#### Day 4: User Login + JWT (Coming Soon)
+#### Day 4: User Login + JWT ✅
 
 -   [x] loginUser Lambda (Node.js)
 -   [x] JWT token generation
@@ -239,10 +239,10 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] React login form
 -   [x] Auth state management (Context)
 
-#### Day 5: Update Profile + Polish (Coming Soon)
+#### Day 5: Update Profile + Polish
 
--   [ ] updateUserProfile Lambda (Node.js)
--   [ ] PUT /users/{id}/profile endpoint
+-   [x] updateUserProfile Lambda (Node.js)
+-   [x] PUT /users/{id}/profile endpoint
 -   [ ] React profile editor
 -   [ ] Postman collection export
 -   [ ] README API documentation
