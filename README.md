@@ -122,7 +122,10 @@ Leaderboards
 
 ### Postman
 
-Import collection from `/docs/hodler-api-postman.json` (available later)
+1. Import collection: `postman/Hodler_API.postman_collection.json`
+2. Register a new user
+3. Copy the token from response
+4. Use token in Authorization header for protected endpoints
 
 ### Manual Testing
 
@@ -161,22 +164,71 @@ Or visit: AWS Console → Billing Dashboard
 
 ### Lambda Deployment
 
+#### Node.js Lambdas
+
 1. Package function with dependencies:
 
-    ```bash
+```bash
     cd lambda-functions/functionName
     npm install
     zip -r functionName.zip .
-    ```
+```
 
 2. Upload via AWS Console:
 
     - Lambda → Function → Code → Upload from .zip
 
 3. Configure:
+    - Runtime: Node.js 20.x
     - Timeout: 30 seconds
     - Memory: 256 MB
     - Environment variables (if needed)
+
+#### Python Lambdas
+
+**Prerequisites:**
+
+-   Docker Desktop installed and running
+
+1. Package function with dependencies (using Docker for Linux compatibility):
+
+```powershell
+    # In PowerShell, navigate to lambda function directory
+    cd lambda-functions/functionName
+
+    # Run build script
+    .\build.ps1
+
+    # Or manually:
+    docker run --rm -v ${PWD}:/var/task python:3.14-slim pip install -r /var/task/requirements.txt -t /var/task/package/
+    Copy-Item lambda_function.py, models.py package/ -Force
+    cd package
+    Compress-Archive -Path * -DestinationPath ../functionName.zip -Force
+    cd ..
+```
+
+2. Upload via AWS Console:
+
+    - Lambda → Function → Code → Upload from .zip
+    - Note: Package may be 10-20MB due to dependencies like Pydantic
+
+3. Configure:
+    - Runtime: Python 3.14
+    - Handler: lambda_function.lambda_handler
+    - Timeout: 30 seconds
+    - Memory: 256 MB
+    - Environment variables:
+        - `JWT_SECRET`: (same value across all auth Lambdas)
+
+**Why Docker?**
+Python packages with compiled dependencies (like Pydantic) must be built for Linux (Lambda's runtime environment). Docker ensures cross-platform compatibility.
+
+**Build Script:**
+Each Python Lambda includes a `build.ps1` script for easy rebuilding:
+
+```powershell
+.\build.ps1  # Creates functionName.zip ready for upload
+```
 
 ### API Gateway Deployment
 
@@ -239,13 +291,163 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] React login form
 -   [x] Auth state management (Context)
 
-#### Day 5: Update Profile + Polish
+#### Day 5: Update Profile + Polish ✅
 
 -   [x] updateUserProfile Lambda (Node.js)
 -   [x] PUT /users/{id}/profile endpoint
--   [ ] React profile editor
--   [ ] Postman collection export
--   [ ] README API documentation
+-   [x] React profile editor
+-   [x] Postman collection export
+-   [x] README API documentation
+
+## API Endpoints
+
+Base URL: `https://5bnu3oi26m.execute-api.us-east-1.amazonaws.com/prod`
+
+### Authentication
+
+#### Register User
+
+```http
+POST /auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!",
+  "username": "MyUsername"
+}
+```
+
+**Response (201):**
+
+```json
+{
+    "message": "User registered successfully",
+    "token": "eyJhbGci...",
+    "userId": "user-abc123",
+    "username": "MyUsername"
+}
+```
+
+#### Login
+
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!"
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Login successful",
+    "token": "eyJhbGci...",
+    "userId": "user-abc123",
+    "username": "MyUsername"
+}
+```
+
+### User Profile
+
+#### Get Profile
+
+```http
+GET /users/{userId}/profile
+```
+
+**Response (200):**
+
+```json
+{
+    "userId": "user-abc123",
+    "email": "user@example.com",
+    "username": "MyUsername",
+    "createdAt": "2024-12-10T12:00:00Z",
+    "updatedAt": "2024-12-10T12:00:00Z"
+}
+```
+
+#### Update Profile
+
+```http
+PUT /users/{userId}/profile
+Authorization: Bearer
+Content-Type: application/json
+
+{
+  "username": "NewUsername"
+}
+```
+
+**Response (200):**
+
+```json
+{
+    "message": "Profile updated successfully",
+    "user": {
+        "userId": "user-abc123",
+        "email": "user@example.com",
+        "username": "NewUsername",
+        "createdAt": "2024-12-10T12:00:00Z",
+        "updatedAt": "2024-12-10T13:00:00Z"
+    }
+}
+```
+
+### Error Responses
+
+#### 400 Bad Request
+
+```json
+{
+    "error": "Invalid email format"
+}
+```
+
+#### 401 Unauthorized
+
+```json
+{
+    "error": "Token expired"
+}
+```
+
+#### 403 Forbidden
+
+```json
+{
+    "error": "Not authorized to update this profile"
+}
+```
+
+#### 409 Conflict
+
+```json
+{
+    "error": "Email already registered"
+}
+```
+
+#### 500 Internal Server Error
+
+```json
+{
+    "error": "Internal server error"
+}
+```
+
+## Password Requirements
+
+-   Minimum 8 characters
+-   At least one uppercase letter
+-   At least one lowercase letter
+-   At least one number
+-   At least one special character (!@#$%^&\*...)
 
 ## Related Repositories
 

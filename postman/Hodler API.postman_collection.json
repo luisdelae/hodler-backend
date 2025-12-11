@@ -1,0 +1,120 @@
+{
+    "info": {
+        "_postman_id": "226a32dd-5bcc-491c-a2e0-e9d883d9553e",
+        "name": "Hodler API",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "1256368"
+    },
+    "item": [
+        {
+            "name": "Get User Profile",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "https://5bnu3oi26m.execute-api.us-east-1.amazonaws.com/prod/users/{{user_id}}/profile",
+                    "path": ["prod", "users", "{{user_id}}", "profile"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Register User",
+            "protocolProfileBehavior": {
+                "disabledSystemHeaders": {}
+            },
+            "request": {
+                "auth": {
+                    "type": "noauth"
+                },
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\r\n  \"email\": \"test@example.com\",\r\n  \"password\": \"Baddddpassword\",\r\n  \"username\": \"TestUser\"\r\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://5bnu3oi26m.execute-api.us-east-1.amazonaws.com/prod/auth/register",
+                    "protocol": "https",
+                    "host": [
+                        "5bnu3oi26m",
+                        "execute-api",
+                        "us-east-1",
+                        "amazonaws",
+                        "com"
+                    ],
+                    "path": ["prod", "auth", "register"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Login",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\r\n  \"email\": \"user@example.com\",\r\n  \"password\": \"YourPassword123!\"\r\n}"
+                },
+                "url": {
+                    "raw": "https://5bnu3oi26m.execute-api.us-east-1.amazonaws.com/prod/auth/login",
+                    "protocol": "https",
+                    "host": [
+                        "5bnu3oi26m",
+                        "execute-api",
+                        "us-east-1",
+                        "amazonaws",
+                        "com"
+                    ],
+                    "path": ["prod", "auth", "login"]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Update Profile",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{auth_token}}",
+                        "type": "text"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\r\n  \"username\": \"PostmanTestUser\"\r\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "https://5bnu3oi26m.execute-api.us-east-1.amazonaws.com/prod/users/{{user_id}}/profile",
+                    "path": ["prod", "users", "{{user_id}}", "profile"]
+                }
+            },
+            "response": []
+        }
+    ]
+}
