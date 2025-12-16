@@ -241,63 +241,44 @@ Each Python Lambda includes a `build.ps1` script for easy rebuilding:
 This backend is part of an 8-week learning project to build full-stack web development skills:
 
 -   **Week 1**: React landing page
--   **Week 2**: AWS Lambda + DynamoDB (current)
+-   **Week 2**: AWS Lambda + DynamoDB
 -   **Week 3**: Redux state management
--   **Week 4-5**: Leaderboard backend
--   **Week 6-7**: Terraform + CI/CD
--   **Week 8**: Production deployment + polish
+-   **Week 4**: Leaderboard backend (current)
+-   **Week 5**: Terraform + CI/CD
+-   **Week 6**: Production deployment + polish
 
 Coming from Android development (Kotlin, Jetpack Compose), this project translates mobile patterns to web/cloud architecture.
 
 ## Development Checklist
 
-### Week 2: AWS Fundamentals + Authentication
+### Week 2 (Nov 10-16, 2025) ✅
 
-#### Day 1: Setup & First Lambda ✅
+-   [x] AWS account setup (MFA, IAM, billing alerts, CLI)
+-   [x] DynamoDB Users table + helloWorld Lambda
+-   [x] User registration (registerUser Lambda, bcrypt, validation)
+-   [x] User login (loginUser Lambda, JWT generation)
+-   [x] User profile operations (getUserProfile, updateUserProfile Lambdas)
+-   [x] API Gateway endpoints (GET/POST /auth, GET/PUT /users/{id}/profile)
+-   [x] Postman collection + API documentation
 
--   [x] AWS account secured (MFA, IAM user)
--   [x] Billing alerts configured
--   [x] AWS CLI configured
--   [x] First Lambda function (helloWorld)
--   [x] API Gateway connected
--   [x] React integration working
+### Week 4 (Dec 16-22, 2025)
 
-#### Day 2: DynamoDB & Read Operations ✅
+-   [ ] SNS topic + sendWelcomeEmail Lambda (Python)
+-   [ ] Email verification (generateVerificationToken, verifyEmail Lambdas)
+-   [ ] Leaderboard DynamoDB table + submitScore/getLeaderboard Lambdas (Python)
+-   [ ] SQS queue + processScoreQueue Lambda (Python)
+-   [ ] EventBridge cron + calculateRankings Lambda (Python)
+-   [ ] S3 bucket + generateUploadUrl Lambda (Python) for profile pictures
+-   [ ] DynamoDB GSI on email attribute + refactor getUserProfile to use GSI
 
--   [x] DynamoDB Users table created
--   [x] Test data added manually
--   [x] getUserProfile Lambda (Node.js)
--   [x] DynamoDB read permissions configured
--   [x] Lambda tested in console
--   [x] API Gateway GET /users/{id}/profile endpoint
--   [x] Test endpoint with Postman
--   [x] React component to fetch profile
+### Week 5 (Dec 23-29, 2025)
 
-#### Day 3: User Registration ✅
-
--   [x] registerUser Lambda (Node.js)
--   [x] bcrypt password hashing
--   [x] Email validation
--   [x] Password validation
--   [x] POST /auth/register endpoint
--   [x] React registration form
-
-#### Day 4: User Login + JWT ✅
-
--   [x] loginUser Lambda (Node.js)
--   [x] JWT token generation
--   [x] Password verification
--   [x] POST /auth/login endpoint
--   [x] React login form
--   [x] Auth state management (Context)
-
-#### Day 5: Update Profile + Polish ✅
-
--   [x] updateUserProfile Lambda (Node.js)
--   [x] PUT /users/{id}/profile endpoint
--   [x] React profile editor
--   [x] Postman collection export
--   [x] README API documentation
+-   [ ] Terraform modules (Lambda, DynamoDB, API Gateway, SNS, SQS, EventBridge, S3)
+-   [ ] Terraform workspaces (dev/prod)
+-   [ ] GitHub Actions deployment automation
+-   [ ] AWS Secrets Manager for sensitive values
+-   [ ] Convert getUserProfile to Python (remove email from response)
+-   [ ] OAuth architecture documentation
 
 ## API Endpoints
 
