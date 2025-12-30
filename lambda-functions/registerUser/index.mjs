@@ -51,6 +51,12 @@ function validatePassword(password) {
 export const handler = async (event) => {
     console.log('Event: ', JSON.stringify(event, null, 2));
 
+    if (!JWT_SECRET || JWT_SECRET === 'dev-secret-change-in-production') {
+        console.warn(
+            'WARNING: Using default JWT_SECRET - should be changed in production'
+        );
+    }
+
     let body;
 
     try {
@@ -68,14 +74,16 @@ export const handler = async (event) => {
 
     const { email, password, username } = body;
 
-    if (!email) {
+    if (!email || !password || !username) {
         return {
             statusCode: 400,
             headers: {
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
             },
-            body: JSON.stringify({ error: 'Email is required' }),
+            body: JSON.stringify({
+                error: 'Email, password, and username are required',
+            }),
         };
     }
 
@@ -110,23 +118,37 @@ export const handler = async (event) => {
         // Future: Create GSI on 'email' attribute for O(1) lookup
         const scanCommand = new ScanCommand({
             TableName: TABLE_NAME,
-            FilterExpression: 'email = :email',
+            FilterExpression: 'email = :email OR username = :username',
             ExpressionAttributeValues: {
                 ':email': email,
+                ':username': username,
             },
         });
 
         const existingUsers = await dynamodb.send(scanCommand);
 
         if (existingUsers.Items && existingUsers.Items.length > 0) {
-            return {
-                statusCode: 409,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-                body: JSON.stringify({ error: 'Email already registered' }),
-            };
+            const existingUser = existingUsers.Items[0];
+            if (existingUser.email === email) {
+                return {
+                    statusCode: 409,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify({ error: 'Email already registered' }),
+                };
+            }
+            if (existingUser.username === username) {
+                return {
+                    statusCode: 409,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                    },
+                    body: JSON.stringify({ error: 'Username already taken' }),
+                };
+            }
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
@@ -138,6 +160,7 @@ export const handler = async (event) => {
             email,
             passwordHash,
             username: username || email.split('@')[0],
+            verified: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
         };
