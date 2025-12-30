@@ -2,7 +2,7 @@
 Environment variable configuration helpers
 """
 import os
-from typing import Optional
+from typing import Optional, overload
 
 
 def get_required_env(key: str) -> str:
@@ -23,6 +23,12 @@ def get_required_env(key: str) -> str:
         raise ValueError(f'Required environment variable not set: {key}')
     return value
 
+
+@overload
+def get_optional_env(key: str) -> Optional[str]: ...
+
+@overload
+def get_optional_env(key: str, default: str) -> str: ...
 
 def get_optional_env(key: str, default: Optional[str] = None) -> Optional[str]:
     """

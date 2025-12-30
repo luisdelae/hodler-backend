@@ -4,7 +4,7 @@ Standard HTTP responses for Lambda functions
 import json
 from typing import Dict, Any, Optional
 
-def success_responses(
+def success_response(
         data: Dict[str, Any],
         status_code: int = 200
 ) -> Dict[str, Any]:
