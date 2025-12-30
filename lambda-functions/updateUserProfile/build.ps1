@@ -5,6 +5,9 @@ docker run --rm -v ${PWD}:/var/task python:3.14-slim pip install -r /var/task/re
 
 Copy-Item lambda_function.py, models.py package/ -Force
 
+New-Item -ItemType Directory -Force -Path package/shared/python | Out-Null
+Copy-Item ../shared/python/*.py package/shared/python/ -Force
+
 cd package
 Compress-Archive -Path * -DestinationPath ../updateUserProfile.zip -Force
 cd ..

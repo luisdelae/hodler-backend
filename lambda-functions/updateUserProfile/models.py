@@ -31,16 +31,4 @@ class TokenPayload(BaseModel):
     userId: str
     email: str
     exp: Optional[int] = None
-
-
-class ErrorResponse(BaseModel):
-    """Standard error response"""
-
-    error: str
-
-
-class SuccessResponse(BaseModel):
-    """Sucess reponse for profile update"""
-
-    message: str
-    user: User
+    

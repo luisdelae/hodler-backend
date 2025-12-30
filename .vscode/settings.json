@@ -1,0 +1,4 @@
+{
+    "python.analysis.extraPaths": ["./lambda-functions"],
+    "python.autoComplete.extraPaths": ["./lambda-functions"]
+}
