@@ -77,6 +77,22 @@ export const handler = async (event) => {
             };
         }
 
+        const isVerified = user.verified !== false;
+
+        if (!isVerified) {
+            return {
+                statusCode: 403,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                body: JSON.stringify({
+                    error: 'Email not verified. Please check your email for the verification link.',
+                    userId: user.userId,
+                }),
+            };
+        }
+
         const token = jwt.sign(
             {
                 userId: user.userId,
