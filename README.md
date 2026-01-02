@@ -264,7 +264,7 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 ### Week 4 (Dec 16-22, 2025)
 
 -   [x] SNS topic + sendWelcomeEmail Lambda (Python)
--   [ ] Email verification (generateVerificationToken, verifyEmail Lambdas)
+-   [x] Email verification (generateVerificationToken, verifyEmail Lambdas)
 -   [ ] Leaderboard DynamoDB table + submitScore/getLeaderboard Lambdas (Python)
 -   [ ] SQS queue + processScoreQueue Lambda (Python)
 -   [ ] EventBridge cron + calculateRankings Lambda (Python)
