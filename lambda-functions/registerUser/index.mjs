@@ -7,11 +7,15 @@ import {
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
+import { LambdaClient, InvokeCommand } from '@aws-sdk/client-lambda';
 
 const client = new DynamoDBClient({});
 const dynamodb = DynamoDBDocumentClient.from(client);
+const lambda = new LambdaClient({});
 const TABLE_NAME = 'Users';
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-in-production';
+const SEND_VERIFICATION_EMAIL_LAMBDA =
+    process.env.SEND_VERIFICATION_EMAIL_LAMBDA_ARN;
 
 /**
  * Validates password strength
@@ -50,6 +54,20 @@ function validatePassword(password) {
 
 export const handler = async (event) => {
     console.log('Event: ', JSON.stringify(event, null, 2));
+
+    if (!SEND_VERIFICATION_EMAIL_LAMBDA) {
+        console.error(
+            'ERROR: SEND_VERIFICATION_EMAIL_LAMBDA_ARN not configured'
+        );
+        return {
+            statusCode: 500,
+            headers: {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+            body: JSON.stringify({ error: 'Email service not configured' }),
+        };
+    }
 
     if (!JWT_SECRET || JWT_SECRET === 'dev-secret-change-in-production') {
         console.warn(
@@ -173,14 +191,24 @@ export const handler = async (event) => {
 
         await dynamodb.send(putCommand);
 
-        const token = jwt.sign(
-            {
-                userId: userId,
-                email: email,
-            },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-        );
+        try {
+            const invokeParams = {
+                FunctionName: SEND_VERIFICATION_EMAIL_LAMBDA,
+                InvocationType: 'Event',
+                Payload: JSON.stringify({
+                    body: JSON.stringify({
+                        userId: newUser.userId,
+                        email: newUser.email,
+                        username: newUser.username,
+                    }),
+                }),
+            };
+
+            await lambda.send(new InvokeCommand(invokeParams));
+            console.log('Verification email Lambda invoked');
+        } catch (emailError) {
+            console.error('Failed to send verification email: ', emailError);
+        }
 
         return {
             statusCode: 201,
@@ -189,8 +217,8 @@ export const handler = async (event) => {
                 'Access-Control-Allow-Origin': '*',
             },
             body: JSON.stringify({
-                message: 'User registered successfully',
-                token,
+                message:
+                    'Regisration successful. Please check your email to verify your account',
                 userId,
                 email,
                 username: newUser.username,
