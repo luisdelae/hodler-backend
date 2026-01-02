@@ -3,6 +3,7 @@ from typing import Dict, Any, cast
 import boto3
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
 from mypy_boto3_lambda import LambdaClient
+import json
 
 from shared.python.responses import (
     success_response,
@@ -94,12 +95,12 @@ def lambda_handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             lambda_client.invoke(
                 FunctionName=WELCOME_EMAIL_LAMBDA,
                 InvocationType='Event',
-                Payload=str({
-                    'body': str({
+                Payload=json.dumps({
+                    'body': json.dumps({
                         'email': email,
                         'username': username
                     })
-                }).encode()
+                })
             )
             print(f'Welcome email Lambda invoked for: {email}')
         except Exception as e:
