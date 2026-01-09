@@ -1,20 +1,24 @@
 import json
 from io import BytesIO
 from typing import Dict, Any
+from datetime import datetime, timezone
 import boto3
 from PIL import Image
 from mypy_boto3_s3 import S3Client
 from mypy_boto3_sqs import SQSClient
+from mypy_boto3_sns import SNSClient
 
 from shared.python.responses import success_response, error_response
 from shared.python.env_config import get_optional_env
 
 s3: S3Client = boto3.client('s3')  # type: ignore
 sqs: SQSClient = boto3.client('sqs')  # type: ignore
+sns: SNSClient = boto3.client('sns')  # type: ignore
 
 UPLOAD_BUCKET = get_optional_env('UPLOAD_BUCKET')
 PROCESSED_BUCKET = get_optional_env('PROCESSED_BUCKET')
 QUEUE_URL = get_optional_env('QUEUE_URL')
+SNS_TOPIC_ARN = get_optional_env('SNS_TOPIC_ARN')
 
 MAX_SIZE = (512, 512)
 QUALITY = 85
@@ -115,3 +119,25 @@ def process_image(source_bucket: str, source_key: str) -> None:
     )
     
     print(f'Successfully processed: {source_key} → {dest_key}')
+
+    if SNS_TOPIC_ARN:
+        try:
+            # Build public image URL
+            image_url = f'https://{PROCESSED_BUCKET}.s3.amazonaws.com/{dest_key}'
+            
+            sns.publish(
+                TopicArn=SNS_TOPIC_ARN,
+                Subject=f'Profile image processed for {user_id}',
+                Message=json.dumps({
+                    'userId': user_id,
+                    'imageUrl': image_url,
+                    'sourceKey': source_key,
+                    'processedKey': dest_key,
+                    'timestamp': datetime.now(timezone.utc).isoformat()
+                }, indent=2)
+            )
+            
+            print(f'SNS notification sent for {user_id}')
+            
+        except Exception as e:
+            print(f'SNS publish error: {str(e)}')
