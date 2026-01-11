@@ -261,15 +261,14 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [x] API Gateway endpoints (GET/POST /auth, GET/PUT /users/{id}/profile)
 -   [x] Postman collection + API documentation
 
-### Week 4 (Dec 16-22, 2025)
+### Week 4 (Dec 16-22, 2025) ✅
 
 -   [x] SNS topic + sendWelcomeEmail Lambda (Python)
 -   [x] Email verification (generateVerificationToken, verifyEmail Lambdas)
--   [ ] Leaderboard DynamoDB table + submitScore/getLeaderboard Lambdas (Python)
--   [ ] SQS queue + processScoreQueue Lambda (Python)
--   [ ] EventBridge cron + calculateRankings Lambda (Python)
--   [ ] S3 bucket + generateUploadUrl Lambda (Python) for profile pictures
--   [ ] DynamoDB GSI on email attribute + refactor getUserProfile to use GSI
+-   [x] Upload profile picture lambdas (Python)
+-   [x] SQS queue + processImage Lambda (Python)
+-   [x] EventBridge cron + cleanUpOldUploads Lambda (Python)
+-   [x] S3 bucket + generateUploadUrl Lambda (Python) for profile pictures
 
 ### Week 5 (Dec 23-29, 2025)
 
@@ -279,6 +278,11 @@ Coming from Android development (Kotlin, Jetpack Compose), this project translat
 -   [ ] AWS Secrets Manager for sensitive values
 -   [ ] Convert getUserProfile to Python (remove email from response)
 -   [ ] OAuth architecture documentation
+
+### Tech Debt
+
+-   [ ] DynamoDB GSI on email attribute + refactor getUserProfile to use GSI
+-   [ ] Add JWT auth to generateUploadUrl
 
 ## API Endpoints
 
